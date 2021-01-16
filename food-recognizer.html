@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+    <title>Object detection using tensorflow</title>
+    <link href="food-recognizer.css" rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <!-- Information about using the page -->
+    <h1>Object detection using tensorflow</h1>
+
+      <!-- Demo -->
+      <p>
+        Wait for the model to load before clicking the button to enable the
+        webcam - at which point it will become visible to use.
+      </p>
+
+      <section id="demos" class="invisible"></section>
+      <p>Hold some objects up close to your webcam to get a real-time classification! When ready click "enable webcam" below and accept access to the webcam when the browser asks (check the top left of your window)</p>
+      
+      <div id="liveView" class="camView">
+        <!-- Button to enable webcam -->
+        <button id="webcamButton">Enable Webcam</button>
+        <video id="webcam" autoplay width="640" height="480"></video>
+      </div>
+    </section>
+
+    <!-- Import TensorFlow.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.12.7"> </script>
+    <!-- *** Import tfjs-vis - optional *** -->
+   <!-- Load the coco-ssd model. -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"> </script>
+    <!-- Import the page's JavaScript to do some stuff -->
+    <script src="/food_recognizer.js" defer></script>
+
+  </body>
+</html>
