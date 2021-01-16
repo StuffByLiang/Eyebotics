@@ -3,9 +3,20 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var bodyParser = require("body-parser");
+const { IamTokenManager } = require("ibm-watson/auth");
+
+// allows environment properties to be set in a file named .env
+
+require("dotenv").config({ silent: true });
+
+if (!process.env.SPEECH_TO_TEXT_IAM_APIKEY) {
+  console.error(
+    "Missing required credentials - see https://github.com/watson-developer-cloud/node-sdk#getting-the-service-credentials"
+  );
+  process.exit(1);
+}
 
 var indexRouter = require("./src/backend/routes/index");
-var usersRouter = require("./src/backend/routes/users");
 
 var app = express();
 
@@ -19,6 +30,22 @@ app.use(express.static(path.join(__dirname, "dist")));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
+
+const sttAuthenticator = new IamTokenManager({
+  apikey: process.env.SPEECH_TO_TEXT_IAM_APIKEY,
+});
+
+// speech to text token endpoint
+app.use("/api/speech-to-text/token", function (req, res) {
+  return sttAuthenticator
+    .requestToken()
+    .then(({ result }) => {
+      res.json({
+        accessToken: result.access_token,
+        url: process.env.SPEECH_TO_TEXT_URL,
+      });
+    })
+    .catch(console.error);
+});
 
 module.exports = app;

@@ -12,3 +12,28 @@ window.playAudio = async (text) => {
 window.clicked = () => {
   window.playAudio($("#text").val());
 };
+
+window.recognizeAudio = () => {
+  fetch("/api/speech-to-text/token")
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (token) {
+      var stream = WatsonSpeech.SpeechToText.recognizeMicrophone(
+        Object.assign(token, {
+          outputElement: "#output", // CSS selector or DOM Element
+        })
+      );
+
+      stream.on("error", function (err) {
+        console.log(err);
+      });
+
+      window.stopStream = function () {
+        stream.stop();
+      };
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+};
