@@ -1,5 +1,4 @@
 const video = document.getElementById("video");
-// const imageUpload = document.getElementById("imageUpload");
 let labeledFaceDescriptors;
 let faceMatcher;
 
@@ -11,41 +10,40 @@ Promise.all([
     faceapi.nets.faceExpressionNet.loadFromUri('/models'),
     faceapi.nets.ageGenderNet.loadFromUri('/models'),
     faceapi.nets.ssdMobilenetv1.loadFromUri('/models')
-// ]).then(start).then(startVideo)
 ]).then(startVideo)
 
-async function start() {
-    const container = document.createElement('div')
-    container.style.position = 'relative'
-    document.body.append(container)
-    const labeledFaceDescriptors = await loadLabeledImages()
-    const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
-    let image
-    let canvas
-    document.body.append('Loaded')
-    imageUpload.addEventListener('change', async() => {
-        if (image) image.remove()
-        if (canvas) canvas.remove()
-        image = await faceapi.bufferToImage(imageUpload.files[0])
+// async function start() {
+//     const container = document.createElement('div')
+//     container.style.position = 'relative'
+//     document.body.append(container)
+//     const labeledFaceDescriptors = await loadLabeledImages()
+//     const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
+//     let image
+//     let canvas
+//     document.body.append('Loaded')
+//     imageUpload.addEventListener('change', async() => {
+//         if (image) image.remove()
+//         if (canvas) canvas.remove()
+//         image = await faceapi.bufferToImage(imageUpload.files[0])
 
-        container.append(image)
-        canvas = faceapi.createCanvasFromMedia(image)
-        container.append(canvas)
-        const displaySize = { width: image.width, height: image.height }
-        faceapi.matchDimensions(canvas, displaySize)
-        const detections = await faceapi.detectAllFaces(image).withFaceLandmarks().withFaceDescriptors()
-        // document.body.append(detections.length)   // counts # of faces
+//         container.append(image)
+//         canvas = faceapi.createCanvasFromMedia(image)
+//         container.append(canvas)
+//         const displaySize = { width: image.width, height: image.height }
+//         faceapi.matchDimensions(canvas, displaySize)
+//         const detections = await faceapi.detectAllFaces(image).withFaceLandmarks().withFaceDescriptors()
+//         // document.body.append(detections.length)   // counts # of faces
 
-        const resizedDetections = faceapi.resizeResults(detections, displaySize);
-        const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
-        results.forEach((result, i) => {
-            const box = resizedDetections[i].detection.box
-            const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString()})
-            drawBox.draw(canvas)
+//         const resizedDetections = faceapi.resizeResults(detections, displaySize);
+//         const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
+//         results.forEach((result, i) => {
+//             const box = resizedDetections[i].detection.box
+//             const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString()})
+//             drawBox.draw(canvas)
 
-        })
-    })
-}
+//         })
+//     })
+// }
 
 function loadLabeledImages() {
     const labels = ['Black Widow', 'Captain America', 'Captain Marvel', 'Hawkeye', 'Jim Rhodes', 'Thor', 'Tony Stark']
@@ -63,14 +61,6 @@ function loadLabeledImages() {
     )
 }
 
-// function startVideo() {  // from before images were integrated with video
-//   navigator.getUserMedia(
-//     { video: {} },
-//     (stream) => (video.srcObject = stream),
-//     (err) => console.error(err)
-//   );
-// }
-
 async function startVideo() {
     // const labeledFaceDescriptors = await loadLabeledImages()
     // const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
@@ -84,11 +74,43 @@ async function startVideo() {
   );
 }
 
+let getFaceInfo;
+let getIdentity;
+
 video.addEventListener("play", () => {
   const canvas = faceapi.createCanvasFromMedia(video);
   document.body.append(canvas);
   const displaySize = { width: video.width, height: video.height };
   faceapi.matchDimensions(canvas, displaySize);
+
+  getFaceInfo = async () => {
+    const detections = await faceapi
+        .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+        .withFaceLandmarks()
+        .withFaceExpressions()
+        .withAgeAndGender()
+        .withFaceDescriptors();
+    // console.log(detections);
+    const resizedDetections = faceapi.resizeResults(detections, displaySize);
+    const results = resizedDetections.map(face => faceMatcher.findBestMatch(face.descriptor))
+
+    return results.map((face, i) => {
+        const result = resizedDetections[i];
+        console.log(face)
+        
+        let expressionsList = Object.keys(result.expressions).map((key) => [key, result.expressions[key]]);
+
+        expressionList = expressionsList.filter(expression => expression[1] >= 0.3)
+
+        return {
+            age: result.age,
+            gender: result.gender,
+            expressions: expressionList,
+            label: face._label
+        }
+    })
+  }
+
   setInterval(async () => {
     const detections = await faceapi
       .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
@@ -96,7 +118,7 @@ video.addEventListener("play", () => {
       .withFaceExpressions()
       .withAgeAndGender()
       .withFaceDescriptors();
-    console.log(detections);
+    // console.log(detections);
     const resizedDetections = faceapi.resizeResults(detections, displaySize);
     // console.log("resizedDetections:", resizedDetections);
     canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
@@ -132,3 +154,4 @@ video.addEventListener("play", () => {
         })
   }, 100);
 });
+
