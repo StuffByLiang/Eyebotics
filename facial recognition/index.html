@@ -16,14 +16,19 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                flex-direction: column;
             }
 
             canvas {
                 position: absolute;
+                top: 0;
+                left: 0;
             }
         </style>
     </head>
     <body>
         <video id="video" width="720" height="560" autoplay muted></video>
+
+        <input type="file" id="imageUpload">
     </body>
 </html>
