@@ -12,39 +12,6 @@ Promise.all([
     faceapi.nets.ssdMobilenetv1.loadFromUri('/models')
 ]).then(startVideo)
 
-// async function start() {
-//     const container = document.createElement('div')
-//     container.style.position = 'relative'
-//     document.body.append(container)
-//     const labeledFaceDescriptors = await loadLabeledImages()
-//     const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
-//     let image
-//     let canvas
-//     document.body.append('Loaded')
-//     imageUpload.addEventListener('change', async() => {
-//         if (image) image.remove()
-//         if (canvas) canvas.remove()
-//         image = await faceapi.bufferToImage(imageUpload.files[0])
-
-//         container.append(image)
-//         canvas = faceapi.createCanvasFromMedia(image)
-//         container.append(canvas)
-//         const displaySize = { width: image.width, height: image.height }
-//         faceapi.matchDimensions(canvas, displaySize)
-//         const detections = await faceapi.detectAllFaces(image).withFaceLandmarks().withFaceDescriptors()
-//         // document.body.append(detections.length)   // counts # of faces
-
-//         const resizedDetections = faceapi.resizeResults(detections, displaySize);
-//         const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
-//         results.forEach((result, i) => {
-//             const box = resizedDetections[i].detection.box
-//             const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString()})
-//             drawBox.draw(canvas)
-
-//         })
-//     })
-// }
-
 function loadLabeledImages() {
     const labels = ['Black Widow', 'Captain America', 'Captain Marvel', 'Hawkeye', 'Jim Rhodes', 'Thor', 'Tony Stark']
     return Promise.all(
@@ -75,7 +42,7 @@ async function startVideo() {
 }
 
 let getFaceInfo;
-let getIdentity;
+let getLocation;
 
 video.addEventListener("play", () => {
   const canvas = faceapi.createCanvasFromMedia(video);
@@ -100,7 +67,7 @@ video.addEventListener("play", () => {
         
         let expressionsList = Object.keys(result.expressions).map((key) => [key, result.expressions[key]]);
 
-        expressionList = expressionsList.filter(expression => expression[1] >= 0.3)
+        expressionList = expressionsList.filter(expression => expression[1] >= 0.1)
 
         return {
             age: result.age,
@@ -150,8 +117,36 @@ video.addEventListener("play", () => {
             const box = resizedDetections[i].detection.box
             const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString()})
             drawBox.draw(canvas)
-
         })
+        // const domRect = canvas.getBoundingClientRect();
+        // console.log('box location: ', domRect);
   }, 100);
+
+//   getLocation = async () => {
+//     const input = await faceapi.toNetInput(video) 
+//     const locations = await faceapi.locateFaces(input, 0.2)
+
+//     if (input.inputs != null) {
+//         const faceImages = await faceapi.extractFaces(input.inputs[0], locations)
+  
+//         const alignedFaceBoxes = await Promise.all(faceImages.map(
+//             async (faceCanvas, i) => {
+//                 const faceLandmarks = await faceapi.detectLandmarks(faceCanvas)
+//                 return faceLandmarks.align(locations[i])
+//             }
+//         ))
+//         const alignedFaceImages = await faceapi.extractFaces(input.inputs[0], alignedFaceBoxes)
+//         input.dispose()
+//         faceImages.forEach(async (faceCanvas, i) => {
+//             $('#facesContainer').append(alignedFaceImages[i])
+//             percentage = percentage + 5;
+//         })
+//         canvas.drawImage(alignedFaceImages[i], 0, 0, canvas.width, canvas.height)
+
+//         return locations;
+//     }    
+//   }
+  
+  
 });
 
