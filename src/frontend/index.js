@@ -148,6 +148,8 @@ async function startVideo() {
     (err) => console.error(err)
   );
   recognizeAudio();
+  switchPage("#listening");
+  $("#loading").hide();
 }
 
 let getFaceInfo;
@@ -202,7 +204,7 @@ video.addEventListener("play", () => {
 {
   fullTextAnnotation: null
 localizedObjectAnnotations: (4) [{…}, {…}, {…}, {…}]
-// when you take screenshot, you save each object as an array 
+// when you take screenshot, you save each object as an array
 textAnnotations
 }
 */
@@ -308,6 +310,14 @@ addCommand("person", async () => {
   // }
 });
 
+addCommand("debug", async () => {
+  switchPage("#debug");
+});
+
+addCommand("normal", async () => {
+  switchPage("#listening");
+});
+
 addCommand("for people", async () => {
   await playAudio("Scanning for people");
   setInterval(async () => {
@@ -353,3 +363,18 @@ addCommand("for people", async () => {
     });
   }, 100);
 });
+
+const pages = ["#listening", "#debug"];
+
+const switchPage = (page) => {
+  pages.forEach((p) => {
+    $(p).hide();
+  });
+  $(page).show();
+};
+
+pages.forEach((p) => {
+  $(p).hide();
+});
+
+window.switchPage = switchPage;
