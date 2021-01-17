@@ -392,6 +392,7 @@ canvas {
     }
 }
 
-#debug, #listeing {
-	display: none
+#debug, #listening {
+  visibility: hidden;
+  position: absolute;
 }
