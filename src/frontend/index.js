@@ -124,6 +124,7 @@ function loadLabeledImages() {
       }
 
       return new faceapi.LabeledFaceDescriptors(label, description);
+      // description is in an array with their, gender, facial expression
     })
   );
 }
@@ -156,7 +157,6 @@ async function startVideo() {
     (stream) => (video.srcObject = stream),
     (err) => console.error(err)
   );
-
   recognizeAudio();
 }
 
@@ -254,19 +254,43 @@ window.startRecognition = startRecognition;
 {
   fullTextAnnotation: null
 localizedObjectAnnotations: (4) [{…}, {…}, {…}, {…}]
+// when you take screenshot, you save each object as an array 
 textAnnotations
 }
 */
 
 // userstory 1: user asks what text is on the screen -> siri reads taht shit to us
-addCommand('read text', async () => {
-  playAudio('got it'); // plays audio
+addCommand("read text", async () => {
+  playAudio("got it"); // plays audio
   let data = await getDataFromImage(); // => {}
-
-  if(data.fullTextAnnotation === null) {
-    playAudio(`No identifiable text found`)
+  if (data.fullTextAnnotation === null) {
+    playAudio(`No identifiable text found`);
   } else {
     let text = data.fullTextAnnotation.text;
-    playAudio(`We found ${text || ''}`)
+    playAudio(`We found ${text || ""}`);
   }
-})
+});
+
+// // user story2: recognizing objects
+addCommand("give me objects", async () => {
+  playAudio("got the objects");
+  let data = await getDataFromImage();
+  let listOfItems = data.localizedObjectAnnotations;
+  if (listOfItems.length === 0) {
+    playAudio("No identifiable object found");
+  } else {
+    playAudio("The objects that are present are as follows");
+    for (let i = 0; i < listOfItems.length; i++) {
+      playAudio(listOfItems[i].name);
+    }
+  }
+});
+
+window.getFaceInfo = getFaceInfo;
+
+// user story 3: recognizing the faces of the people
+
+
+
+
+//user story 4:
