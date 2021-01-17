@@ -1,0 +1,58 @@
+
+body {
+  overflow: hidden;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400');
+.bg,
+.button {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.bg {
+  animation: pulse 1.2s ease infinite;
+  background: $pink;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  z-index: 99;
+  border: none;
+  background: $pink;
+  background-size: 18px;
+  cursor: pointer;
+  outline: none;
+}
+
+.button a {
+  position: absolute;
+  color: #FFF;
+  font-size: 17px;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1, 1);
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
