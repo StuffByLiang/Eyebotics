@@ -50,3 +50,4 @@ Finally,
 ```
 npm start
 ```
+and visit localhost:3000
