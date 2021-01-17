@@ -73,8 +73,21 @@ window.recognizeAudio = recognizeAudio;
 window.addCommand = addCommand;
 
 const video = document.getElementById("video");
+window.video = video;
 let labeledFaceDescriptors;
 let faceMatcher;
+
+const getDataFromImage = async () => {
+  let res = await axios.post(`/image`, {
+    image: getScreenshot(window.video),
+  });
+
+  console.log(res);
+
+  return res;
+};
+
+window.getDataFromImage = getDataFromImage;
 
 Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
@@ -115,9 +128,26 @@ function loadLabeledImages() {
   );
 }
 
+/**
+ * Takes a screenshot from video.
+ * @param videoEl {Element} Video element
+ * @param scale {Number} Screenshot scale (default = 1)
+ * @returns {string} image base64
+ */
+function getScreenshot(videoEl, scale) {
+  scale = scale || 1;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = videoEl.clientWidth * scale;
+  canvas.height = videoEl.clientHeight * scale;
+  canvas.getContext("2d").drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+
+  return canvas.toDataURL();
+}
+
+window.getScreenshot = getScreenshot;
+
 async function startVideo() {
-  // const labeledFaceDescriptors = await loadLabeledImages()
-  // const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
   labeledFaceDescriptors = await loadLabeledImages();
   faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6);
 
@@ -129,11 +159,11 @@ async function startVideo() {
 }
 
 let getFaceInfo;
-let getLocation;
 
-video.addEventListener("play", () => {
+const startRecognition = () => {
   const canvas = faceapi.createCanvasFromMedia(video);
   document.getElementById("video-container").append(canvas);
+  window.canvas = canvas;
   const displaySize = { width: video.width, height: video.height };
   faceapi.matchDimensions(canvas, displaySize);
 
@@ -144,7 +174,7 @@ video.addEventListener("play", () => {
       .withFaceExpressions()
       .withAgeAndGender()
       .withFaceDescriptors();
-    // console.log(detections);
+
     const resizedDetections = faceapi.resizeResults(detections, displaySize);
     const results = resizedDetections.map((face) =>
       faceMatcher.findBestMatch(face.descriptor)
@@ -179,9 +209,9 @@ video.addEventListener("play", () => {
       .withFaceExpressions()
       .withAgeAndGender()
       .withFaceDescriptors();
-    // console.log(detections);
+
     const resizedDetections = faceapi.resizeResults(detections, displaySize);
-    // console.log("resizedDetections:", resizedDetections);
+
     canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
     faceapi.draw.drawDetections(canvas, resizedDetections);
     faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
@@ -203,9 +233,6 @@ video.addEventListener("play", () => {
       ).draw(canvas);
     }
 
-    // const labeledFaceDescriptors = await loadLabeledImages()
-    // const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
-    // document.body.append('Loaded')
     const results = resizedDetections.map((d) =>
       faceMatcher.findBestMatch(d.descriptor)
     );
@@ -216,32 +243,7 @@ video.addEventListener("play", () => {
       });
       drawBox.draw(canvas);
     });
-    // const domRect = canvas.getBoundingClientRect();
-    // console.log('box location: ', domRect);
   }, 100);
+};
 
-  //   getLocation = async () => {
-  //     const input = await faceapi.toNetInput(video)
-  //     const locations = await faceapi.locateFaces(input, 0.2)
-
-  //     if (input.inputs != null) {
-  //         const faceImages = await faceapi.extractFaces(input.inputs[0], locations)
-
-  //         const alignedFaceBoxes = await Promise.all(faceImages.map(
-  //             async (faceCanvas, i) => {
-  //                 const faceLandmarks = await faceapi.detectLandmarks(faceCanvas)
-  //                 return faceLandmarks.align(locations[i])
-  //             }
-  //         ))
-  //         const alignedFaceImages = await faceapi.extractFaces(input.inputs[0], alignedFaceBoxes)
-  //         input.dispose()
-  //         faceImages.forEach(async (faceCanvas, i) => {
-  //             $('#facesContainer').append(alignedFaceImages[i])
-  //             percentage = percentage + 5;
-  //         })
-  //         canvas.drawImage(alignedFaceImages[i], 0, 0, canvas.width, canvas.height)
-
-  //         return locations;
-  //     }
-  //   }
-});
+window.startRecognition = startRecognition;
