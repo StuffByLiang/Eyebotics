@@ -2,6 +2,7 @@ import "regenerator-runtime/runtime";
 import axios from "axios";
 
 window.commands = [];
+const pages = ["#listening", "#debug"];
 
 const addCommand = (text, callback) => {
   window.commands.push([text, callback]);
@@ -150,6 +151,10 @@ async function startVideo() {
   recognizeAudio();
   switchPage("#listening");
   $("#loading").hide();
+  pages.forEach((p) => {
+    $(p).show();
+    $(p).show();
+  });
 }
 
 let getFaceInfo;
@@ -310,7 +315,7 @@ addCommand("person", async () => {
   // }
 });
 
-addCommand("debug", async () => {
+addCommand("bug", async () => {
   switchPage("#debug");
 });
 
@@ -364,13 +369,13 @@ addCommand("for people", async () => {
   }, 100);
 });
 
-const pages = ["#listening", "#debug"];
-
 const switchPage = (page) => {
   pages.forEach((p) => {
-    $(p).hide();
+    $(p).css("visibility", "hidden");
+    $(p).css("position", "absolute");
   });
-  $(page).show();
+  $(page).css("visibility", "visible");
+  $(page).css("position", "relative");
 };
 
 pages.forEach((p) => {
