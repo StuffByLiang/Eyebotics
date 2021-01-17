@@ -25,8 +25,8 @@ The application is mainly built in Node.js and Express.js. However, our main fea
 * Combining multiple recognition features to accurately predict age, gender, identity, and facial expressions all simultaneously
 
 ## Accomplishments that we're proud of
-* Creating a fully functional voice assistant that can identify each member of our team and accurately predict age, gender, and nearby objects
-* Contributing to making things more accessible to people who are blind **in under 36 hours!**  
+* Creating a fully functional voice assistant that can _identify_ each member of our team and accurately predict __age, gender,__ and __nearby objects__, as well as __reading text from images__
+* Contributing to making things more accessible to people who are blind __in under 36 hours!__ 
 
 ## What's next for eyebotics
 * Include a text-summarizer that can concisely read aloud large paragraphs
