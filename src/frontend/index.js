@@ -84,7 +84,7 @@ const getDataFromImage = async () => {
 
   console.log(res);
 
-  return res;
+  return res.data;
 };
 
 window.getDataFromImage = getDataFromImage;
@@ -156,6 +156,8 @@ async function startVideo() {
     (stream) => (video.srcObject = stream),
     (err) => console.error(err)
   );
+
+  recognizeAudio();
 }
 
 let getFaceInfo;
@@ -247,3 +249,24 @@ const startRecognition = () => {
 };
 
 window.startRecognition = startRecognition;
+
+/*
+{
+  fullTextAnnotation: null
+localizedObjectAnnotations: (4) [{…}, {…}, {…}, {…}]
+textAnnotations
+}
+*/
+
+// userstory 1: user asks what text is on the screen -> siri reads taht shit to us
+addCommand('read text', async () => {
+  playAudio('got it'); // plays audio
+  let data = await getDataFromImage(); // => {}
+
+  if(data.fullTextAnnotation === null) {
+    playAudio(`No identifiable text found`)
+  } else {
+    let text = data.fullTextAnnotation.text;
+    playAudio(`We found ${text || ''}`)
+  }
+})
