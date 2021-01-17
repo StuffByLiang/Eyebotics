@@ -99,23 +99,13 @@ Promise.all([
 ]).then(startVideo);
 
 function loadLabeledImages() {
-  const labels = [
-    "Black Widow",
-    "Captain America",
-    "Captain Marvel",
-    "Hawkeye",
-    "Jim Rhodes",
-    "Thor",
-    "Tony Stark",
-  ];
+  const labels = ["Liang", "Emily", "Charles", "Annie"];
   return Promise.all(
     labels.map(async (label) => {
       const description = [];
       for (let i = 1; i <= 2; i++) {
         // is 2 because there are two images so far of every single character; the more you have, the more accurate it will be
-        const img = await faceapi.fetchImage(
-          `https://raw.githubusercontent.com/StuffByLiang/hack-the-north/facial-recognition/facial%20recognition/labeled_images/${label}/${i}.jpg`
-        ); // must be hosted on a live website (live server doesn't work for this) for fetchImage()
+        const img = await faceapi.fetchImage(`./images/${label}/${i}.jpg`); // must be hosted on a live website (live server doesn't work for this) for fetchImage()
         const detections = await faceapi
           .detectSingleFace(img)
           .withFaceLandmarks()
@@ -161,12 +151,15 @@ async function startVideo() {
 }
 
 let getFaceInfo;
+window.getFaceInfo = getFaceInfo;
+let canvas;
+let displaySize;
 
-const startRecognition = () => {
-  const canvas = faceapi.createCanvasFromMedia(video);
+video.addEventListener("play", () => {
+  canvas = faceapi.createCanvasFromMedia(video);
   document.getElementById("video-container").append(canvas);
   window.canvas = canvas;
-  const displaySize = { width: video.width, height: video.height };
+  displaySize = { width: video.width, height: video.height };
   faceapi.matchDimensions(canvas, displaySize);
 
   getFaceInfo = async () => {
@@ -191,19 +184,132 @@ const startRecognition = () => {
         result.expressions[key],
       ]);
 
-      expressionList = expressionsList.filter(
+      expressionsList = expressionsList.filter(
         (expression) => expression[1] >= 0.1
       );
 
       return {
         age: result.age,
         gender: result.gender,
-        expressions: expressionList,
+        expressions: expressionsList,
         label: face._label,
       };
     });
   };
+});
 
+/*
+{
+  fullTextAnnotation: null
+localizedObjectAnnotations: (4) [{…}, {…}, {…}, {…}]
+// when you take screenshot, you save each object as an array 
+textAnnotations
+}
+*/
+
+// userstory 1: user asks what text is on the screen -> siri reads taht shit to us
+addCommand("text", async () => {
+  playAudio("got it"); // plays audio
+  let data = await getDataFromImage(); // => {}
+  if (data.fullTextAnnotation === null) {
+    playAudio(`No identifiable text found`);
+  } else {
+    let text = data.fullTextAnnotation.text;
+    playAudio(`We found ${text || ""}`);
+  }
+});
+
+// // user story2: recognizing objects
+addCommand("object", async () => {
+  let data = await getDataFromImage();
+  let listOfItems = data.localizedObjectAnnotations;
+  if (listOfItems.length === 0) {
+    await playAudio("No identifiable object found");
+  } else {
+    let string = "The objects that are present are as follows: ";
+    for (let item of listOfItems) {
+      ///let position = ... TODO:
+      const position = getPosition(
+        item.boundingPoly.normalizedVertices[0],
+        item.boundingPoly.normalizedVertices[1],
+        item.boundingPoly.normalizedVertices[2],
+        item.boundingPoly.normalizedVertices[3]
+      );
+
+      console.log(position);
+
+      string += `${item.name} is at the ${position}, `;
+    }
+    await playAudio(string);
+  }
+});
+
+// given 4 vertices return the position as a string (top left/right, bottom left/right)
+function getPosition(v1, v2, v3, v4) {
+  // 0 < v1.x v1.y < 1
+  // 0, 0 is top left corner x = 1 y =1 is bottom right corner
+  //finding the center
+
+  var xcoor = v1.x + (v2.x - v1.x) / 2;
+  var ycoor = v1.y + (v3.y - v1.y) / 2;
+
+  if (xcoor > 0.5 && ycoor > 0.5) {
+    return "bottom right";
+  } else if (xcoor > 0.5 && ycoor < 0.5) {
+    return "top right";
+  } else if (xcoor < 0.5 && ycoor < 0.5) {
+    return "top left";
+  } else if (xcoor < 0.5 && ycoor < 0.5) {
+    return "bottom left";
+  } else {
+    return "middle of screen";
+  }
+}
+
+window.getFaceInfo = getFaceInfo;
+
+// user story 3: recognizing the faces of the people
+
+// userstory 1: user asks what text is on the screen -> siri reads taht shit to us
+addCommand("person", async () => {
+  await playAudio("got it"); // plays audio
+  let data = await getFaceInfo(); // => []
+  console.log(data);
+  if (data.length == 0) {
+    await playAudio("There are no people in sight.");
+  } else {
+    let string = "";
+    for (let i = 0; i < data.length; i++) {
+      var str_expressions = "";
+
+      // ...data[i].label -> name of the person or 'unknown'
+      if (data[i].label == undefined) {
+        break;
+      }
+      for (let j = 0; j < data[i].expressions.length; j++) {
+        str_expressions = data[i].expressions[j][0] + ", ";
+        if (j - 2 == data[i].expressions.length) {
+          str_expressions = str_expressions + " and ";
+        }
+      }
+
+      string += `The person in screen is ${data[i].label}, a ${Math.round(
+        data[i].age
+      )} year old ${data[i].gender} currently feeling ${str_expressions} `;
+    }
+    await playAudio(string);
+  }
+
+  // if (data.fullTextAnnotation === null) {
+  //   playAudio(`No identifiable text found`);
+  // } else {
+  //   let text = data.fullTextAnnotation.text;
+  //   playAudio(`We found ${text || ""}`);
+  // }
+});
+
+addCommand("for people", async () => {
+  await playAudio("Scanning for people");
   setInterval(async () => {
     const detections = await faceapi
       .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
@@ -246,51 +352,4 @@ const startRecognition = () => {
       drawBox.draw(canvas);
     });
   }, 100);
-};
-
-window.startRecognition = startRecognition;
-
-/*
-{
-  fullTextAnnotation: null
-localizedObjectAnnotations: (4) [{…}, {…}, {…}, {…}]
-// when you take screenshot, you save each object as an array 
-textAnnotations
-}
-*/
-
-// userstory 1: user asks what text is on the screen -> siri reads taht shit to us
-addCommand("read text", async () => {
-  playAudio("got it"); // plays audio
-  let data = await getDataFromImage(); // => {}
-  if (data.fullTextAnnotation === null) {
-    playAudio(`No identifiable text found`);
-  } else {
-    let text = data.fullTextAnnotation.text;
-    playAudio(`We found ${text || ""}`);
-  }
 });
-
-// // user story2: recognizing objects
-addCommand("give me objects", async () => {
-  playAudio("got the objects");
-  let data = await getDataFromImage();
-  let listOfItems = data.localizedObjectAnnotations;
-  if (listOfItems.length === 0) {
-    playAudio("No identifiable object found");
-  } else {
-    playAudio("The objects that are present are as follows");
-    for (let i = 0; i < listOfItems.length; i++) {
-      playAudio(listOfItems[i].name);
-    }
-  }
-});
-
-window.getFaceInfo = getFaceInfo;
-
-// user story 3: recognizing the faces of the people
-
-
-
-
-//user story 4:

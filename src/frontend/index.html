@@ -1,32 +1,32 @@
 <html>
-  <head>
-    <title>eyebotics</title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-    />
-    <link
-      rel="stylesheet"
-      href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css"
-    />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="/javascripts/watson-speech.js"></script>
-    <script src="/javascripts/face-api.min.js"></script>
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-  </head>
 
-  <body>
-    <div id="video-container">
-      <video id="video" width="720" height="560" autoplay muted></video>
-    </div>
+<head>
+  <title>eyebotics</title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+  <link rel="icon" href="favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa&display=swap" rel="stylesheet">
 
-    <label for="text">Enter text</label>
-    <input type="text" id="text" name="text" />
-    <button onclick="clicked()">Play</button>
-    <button onclick="startRecognition()">Recognize</button>
-    <button onclick="getDataFromImage()">take screenshot</button>
-    <a target="_blank" href="/image.jpg">View Latest screenshot</a>
-    <div id="output"></div>
-  </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="/javascripts/watson-speech.js"></script>
+  <script src="/javascripts/face-api.min.js"></script>
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+</head>
+
+<body>
+  <h1 style="padding-top: 30px; font-family: comfortaa;">Debug Console</h1>
+  <div id="video-container">
+    <video id="video" width="720" height="560" autoplay muted></video>
+  </div>
+
+  <label for="text" style="font-family: comfortaa;">Enter text</label>
+  <input type="text" id="text" name="text" />
+  <button onclick="clicked()">Play</button>
+  <button onclick="getDataFromImage()">take screenshot</button>
+  <a target="_blank" href="/image.jpg">View Latest screenshot</a>
+  <div id="output"></div>
+</body>
+
 </html>

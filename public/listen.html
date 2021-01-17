@@ -1,0 +1,207 @@
+<style>
+  HTML CSSResult Skip Results Iframe EDIT ON @import url("https://fonts.googleapis.com/css?family=Roboto");
+
+  @keyframes circle {
+    50% {
+      transform: scale(1.1);
+    }
+
+    75% {
+      transform: scale(1);
+    }
+
+    100% {
+      transform: scale(1.1);
+    }
+  }
+
+  @keyframes outer-circle {
+    0% {
+      border-color: transparent;
+    }
+
+    25% {
+      border-color: transparent;
+    }
+
+    75% {
+      transform: scale(1.2);
+      border: 1vmin solid rgba(71, 158, 231, 1);
+    }
+
+    100% {
+      transform: scale(1.7);
+      border: 1vmin solid rgba(71, 158, 231, 1);
+      border-color: transparent;
+    }
+  }
+
+  @keyframes outer-circle-2 {
+    0% {
+      transform: scale(1.3);
+      border: 1vmin solid rgba(71, 158, 231, 1);
+    }
+
+    50% {
+      transform: scale(1.7);
+      border-color: transparent;
+    }
+
+    75% {
+      border-color: transparent;
+    }
+
+    100% {
+      border-color: transparent;
+    }
+  }
+
+  @keyframes ripple {
+    0% {
+      box-shadow: 0 0 0 0 rgba(91, 193, 255, 0.3), 0 0 0 0vmin rgba(91, 193, 255, 0.3), 0 0 0 0vmin rgba(91, 193, 255, 0.3), 0 0 0 20vmin rgba(91, 193, 255, 0.3);
+    }
+
+    25% {
+      box-shadow: 0 0 0 0 rgba(91, 193, 255, 0.3), 0 0 0 0vmin rgba(91, 193, 255, 0.3), 0 0 0 15vmin rgba(91, 193, 255, 0.3), 0 0 0 20vmin rgba(91, 193, 255, 0.3);
+    }
+
+    50% {
+      box-shadow: 0 0 0 0 rgba(91, 193, 255, 0.3), 0 0 0 10vmin rgba(91, 193, 255, 0.3), 0 0 0 15vmin rgba(91, 193, 255, 0.3), 0 0 0 20vmin rgba(91, 193, 255, 0.3);
+    }
+
+    75% {
+      box-shadow: 0 0 0 4vmin rgba(91, 193, 255, 0.3), 0 0 0 10vmin rgba(91, 193, 255, 0.3), 0 0 0 15vmin rgba(91, 193, 255, 0.3), 0 0 0 20vmin rgba(91, 193, 255, 0.3);
+    }
+
+    100% {
+      box-shadow: 0 0 0 0vmin rgba(91, 193, 255, 0.3), 0 0 0 0vmin rgba(91, 193, 255, 0.3), 0 0 0 0vmin rgba(91, 193, 255, 0.3), 0 0 0 0vmin rgba(91, 193, 255, 0);
+    }
+  }
+
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+  }
+
+  body {
+    background: linear-gradient(225deg, rgba(71, 158, 231, 1) 0%, rgba(81, 35, 128) 100%);
+    overflow: hidden;
+  }
+
+  .title {
+    color: #fff;
+    text-align: center;
+    font-size: 5vmin;
+    margin-top: 15vmin;
+    font-family: "Roboto", sans-serif;
+  }
+
+  @media (max-width: 480px) and (min-width: 320px) {
+    .title {
+      margin-top: 55vmin;
+    }
+  }
+
+  .logo {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    width: 35vmin;
+    height: 35vmin;
+    border-radius: 50%;
+    background: #fff;
+    animation: circle 1.5s linear infinite, ripple 0.9s linear infinite;
+  }
+
+  .logo .c-shape {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    width: 8vmin;
+    height: 6.5vmin;
+    top: 1vmin;
+    left: -10vmin;
+    border: 4vmin solid #fff;
+    border-top: none;
+    background: transparent;
+    transform: rotate(45deg);
+    border-bottom-left-radius: 8vmin;
+    border-bottom-right-radius: 8vmin;
+  }
+
+  .logo .c-shape:before {
+    content: "";
+    position: absolute;
+    top: -5.5vmin;
+    left: -4vmin;
+    width: 4vmin;
+    height: 7vmin;
+    background: #fff;
+    border-top-left-radius: 2vmin;
+    border-top-right-radius: 2vmin;
+  }
+
+  .logo .c-shape:after {
+    content: "";
+    position: absolute;
+    top: -1.8vmin;
+    left: 8vmin;
+    width: 4vmin;
+    height: 4vmin;
+    background: #fff;
+    border-top-left-radius: 2vmin;
+    border-top-right-radius: 2vmin;
+  }
+
+  .logo .reverse {
+    top: -1.5vmin;
+    left: 9.6vmin;
+    transform: rotate(-135deg);
+  }
+
+  .outer-circle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    width: 90vmin;
+    height: 90vmin;
+    background: transparent;
+    border-radius: 50%;
+    animation: outer-circle 1.5s linear infinite;
+  }
+
+  .outer-circle-2 {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    width: 90vmin;
+    height: 90vmin;
+    background: transparent;
+    border-radius: 50%;
+    animation: outer-circle-2 1.5s linear infinite;
+  }
+
+  .logo img {
+    width: 100%;
+    margin-top: -6px
+  }
+</style>
+<p class="title">Listening</p>
+<div class="logo">
+  <img src="./images/logo.png"></img>
+</div>
+<div class="outer-circle"></div>
+<div class="outer-circle-2"></div>
