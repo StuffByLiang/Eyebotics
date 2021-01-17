@@ -62,3 +62,5 @@ typings/
 
 dist
 My_Project_84215-5e080652aeef.json
+
+*.DS_Store
