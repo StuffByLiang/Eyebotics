@@ -1,9 +1,9 @@
-# eyebotics
+# eyebotics 👁 🤖
 
 ## Inspiration
 12.44 million people in the United States live with blindness or visual impairments (US Centre for Disease Control & Prevention, 2015). This number is projected to reach 25.36 million by 2050. 
 
-These people face innumerous challenges, including difficulty with navigation, crossing the street, and recognizing expressions and emotions in others (especially strangers). Currently, people who are blind or visually impaired need to rely on walking sticks, service dogs, and/or caretakers to assist them through their daily lives. This results in a 
+These people face innumerous challenges, including difficulty with navigation, crossing the street, and recognizing expressions and emotions in others (especially strangers). Currently, people who are blind or visually impaired need to rely on walking sticks, service dogs, and/or caretakers to assist them through their daily lives. 
 
 
 ## What it does
@@ -26,7 +26,7 @@ The application is mainly built in Node.js and Express.js. However, our main fea
 
 ## Accomplishments that we're proud of
 * Creating a fully functional voice assistant that can identify each member of our team and accurately predict age, gender, and nearby objects
-* Contributing to making things more accessible to people who are blind in under 36 hours!  
+* Contributing to making things more accessible to people who are blind **in under 36 hours!**  
 
 ## What's next for eyebotics
 * Include a text-summarizer that can concisely read aloud large paragraphs
