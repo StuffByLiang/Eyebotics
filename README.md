@@ -43,7 +43,8 @@ npm install
 ```
 
 Then, copy .env.example to .env and replace these keys with IBM watson api keys. https://cloud.ibm.com/catalog/services/speech-to-text
-Finally, make a google project and enable cloud vision as well as text to speech, and follow this guide. https://www.google.com/search?q=google+authetnication+json&rlz=1C1CHBF_enCA769CA769&oq=google+authetnication+json&aqs=chrome..69i57j69i64l3.5711j0j1&sourceid=chrome&ie=UTF-8
+
+Finally, make a google project and enable cloud vision as well as text to speech, and follow this guide. https://cloud.google.com/docs/authentication/getting-started
 
 Finally,
 ```
