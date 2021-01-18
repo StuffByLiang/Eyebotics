@@ -100,7 +100,15 @@ Promise.all([
 ]).then(startVideo);
 
 function loadLabeledImages() {
-  const labels = ["Liang", "Emily", "Charles", "Annie"];
+  const labels = [
+    "Liang",
+    "Emily",
+    "Charles",
+    "Annie",
+    "Adrian",
+    "Amogh",
+    "Anindya",
+  ];
   return Promise.all(
     labels.map(async (label) => {
       const description = [];
